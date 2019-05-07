@@ -15,7 +15,7 @@ router.post("/tasks", async (req, res) => {
 
 router.patch("/tasks/:id", async (req, res) => {
   const updateFields = Object.keys(req.body);
-  const allowedUpdateFields = ["name", "description"];
+  const allowedUpdateFields = ["name", "description", "completed"];
   const isValidUpdate = updateFields.every(field =>
     allowedUpdateFields.includes(field)
   );
@@ -25,13 +25,13 @@ router.patch("/tasks/:id", async (req, res) => {
   }
 
   try {
-    let updatedTask = await Task.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true
-    });
+    let updatedTask = await Task.findById(req.params.id);
     if (!updatedTask) {
       return res.status(404).send();
     }
+    updateFields.forEach(key => (updatedTask[key] = req.body[key]));
+    await updatedTask.save();
+
     res.send(updatedTask);
   } catch (err) {
     res.status(400).send(err);
@@ -67,8 +67,8 @@ router.delete("/tasks/:id", async (req, res) => {
     }
     res.send(deletedTask);
   } catch (err) {
-    res.status(500).send(err)
+    res.status(500).send(err);
   }
 });
 
-module.exports = router
+module.exports = router;

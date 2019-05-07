@@ -8,8 +8,8 @@ router.post("/users", async (req, res) => {
   try {
     await user.save();
     res.status(201).send(user);
-  } catch (e) {
-    res.status(400).send(e);
+  } catch (err) {
+    res.status(400).send(err);
   }
 });
 
@@ -17,8 +17,8 @@ router.get("/users", async (req, res) => {
   try {
     const users = await User.find({});
     res.send(users);
-  } catch (e) {
-    res.status(500).send();
+  } catch (err) {
+    res.status(500).send(err);
   }
 });
 
@@ -33,8 +33,8 @@ router.get("/users/:id", async (req, res) => {
     }
 
     res.send(user);
-  } catch (e) {
-    res.status(500).send();
+  } catch (err) {
+    res.status(500).send(err);
   }
 });
 
@@ -50,18 +50,16 @@ router.patch("/users/:id", async (req, res) => {
   }
 
   try {
-    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true
-    });
-
+    const user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).send();
     }
 
+    updates.forEach(key => (user[key] = req.body[key]));
+    await user.save();
     res.send(user);
-  } catch (e) {
-    res.status(400).send(e);
+  } catch (err) {
+    res.status(400).send(err);
   }
 });
 
@@ -74,8 +72,18 @@ router.delete("/users/:id", async (req, res) => {
     }
 
     res.send(user);
-  } catch (e) {
-    res.status(500).send();
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+router.post("/users/login", async (req, res) => {
+  try {
+    const user = await User.loginWithCredentials(req.body.email, req.body.password)
+    res.send(user)
+  } catch (err) {
+    
+    res.status(400).send({errors: err.message});
   }
 });
 
