@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
+const jwt = require('jsonwebtoken')
 
 const userSchema = mongoose.Schema({
   name: {
@@ -39,8 +40,27 @@ const userSchema = mongoose.Schema({
         throw new Error("Age must be a postive number");
       }
     }
-  }
+  },
+  tokens: [
+    {
+      token: {
+        type: String,
+        required: true
+      }
+    }
+  ]
 });
+
+userSchema.methods.generateAuthToken = async function() {
+  const user = this
+  const secretSign = "mun123";
+  const payload = { _id: user._id.toString() };
+  const token = jwt.sign(payload, secretSign, { expiresIn: "7 days" });
+  user.tokens = user.tokens.concat({ token })
+  await user.save()
+
+  return token
+}
 
 userSchema.statics.loginWithCredentials = async (email, password) => {
   const user = await User.findOne({ email });

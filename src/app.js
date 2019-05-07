@@ -1,7 +1,7 @@
 const express = require("express");
 const chalk = require("chalk");
 
-require('./db/mongoose-connect')
+require("./db/mongoose-connect");
 
 const app = express();
 const taskRouter = require("./routers/task-router");
@@ -16,3 +16,4 @@ app.use(userRouter);
 app.listen(PORT, () => {
   console.log(chalk.blue(`Server is up on port ${PORT}`));
 });
+
