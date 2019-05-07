@@ -16,4 +16,3 @@ app.use(userRouter);
 app.listen(PORT, () => {
   console.log(chalk.blue(`Server is up on port ${PORT}`));
 });
-
