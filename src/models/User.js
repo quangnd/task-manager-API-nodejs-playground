@@ -95,6 +95,12 @@ userSchema.pre("save", async function(next) {
   next();
 });
 
+userSchema.virtual("tasks", {
+  ref: "Task",
+  localField: "_id",
+  foreignField: "owner"
+});
+
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;

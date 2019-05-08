@@ -16,3 +16,13 @@ app.use(userRouter);
 app.listen(PORT, () => {
   console.log(chalk.blue(`Server is up on port ${PORT}`));
 });
+
+const User = require('./models/User')
+
+const main = async () => {
+  const user = await User.findById('5cd23b8f154ac2b70183879f')
+  await user.populate('tasks').execPopulate()
+  console.log(user.tasks)
+}
+
+main()
