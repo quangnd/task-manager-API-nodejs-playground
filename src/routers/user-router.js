@@ -169,11 +169,15 @@ router.post(
   upload.single("avatar"),
   async (req, res) => {
     try {
-      req.user.avatar = req.file.buffer
-      await req.user.save()
+      const buffer = await sharp(req.file.buffer)
+        .resize({ width: 250, height: 250 })
+        .png()
+        .toBuffer();
+      req.user.avatar = buffer;
+      await req.user.save();
       res.send();
-    } catch(err) {
-      res.status(500).send(err.message)
+    } catch (err) {
+      res.status(500).send(err.message);
     }
   },
   (error, req, res, next) => {
@@ -181,10 +185,24 @@ router.post(
   }
 );
 
-router.delete('/users/me/avatar', auth, async (req, res) => {
-  req.user.avatar = undefined
-  await req.user.save()
-  res.send()
-})
+router.delete("/users/me/avatar", auth, async (req, res) => {
+  req.user.avatar = undefined;
+  await req.user.save();
+  res.send();
+});
+
+//Get avatar by user id
+router.get("/users/:id/avatar", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user || !user.avatar) {
+      throw new Error("User is not available!");
+    }
+    res.set("Content-Type", "image/jpg");
+    res.send(user.avatar);
+  } catch (error) {
+    res.status(404).send(error.message);
+  }
+});
 
 module.exports = router;
