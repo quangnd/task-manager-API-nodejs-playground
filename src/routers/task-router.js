@@ -46,10 +46,20 @@ router.patch("/tasks/:id", auth, async (req, res) => {
   }
 });
 
+//GET /tasks?completed=true
 router.get("/tasks", auth, async (req, res) => {
+  const match = {};
+  if (req.query.completed) {
+    match.completed = req.query.completed === 'true';
+  }
+
   try {
-    let tasks = await Task.find({ owner: req.user._id });
-    await req.user.populate("tasks").execPopulate();
+    await req.user
+      .populate({
+        path: "tasks",
+        match
+      })
+      .execPopulate();
     res.send(req.user.tasks);
   } catch (err) {
     res.send(err);
