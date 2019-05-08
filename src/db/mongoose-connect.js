@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const chalk = require("chalk");
 
 mongoose
-  .connect("mongodb://localhost:27017/task-manager", {
+  .connect(process.env.MONGODB, {
     useNewUrlParser: true
   })
   .then(() => {
