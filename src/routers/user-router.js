@@ -3,6 +3,7 @@ const User = require("../models/User");
 const auth = require("../middleware/auth");
 const router = new express.Router();
 const multer = require("multer");
+const sharp = require("sharp");
 
 //Create new user
 router.post("/users", async (req, res) => {
