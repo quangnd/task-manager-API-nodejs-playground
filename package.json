@@ -12,7 +12,7 @@
     "testEnvironment": "node"
   },
   "keywords": [],
-  "author": "",
+  "author": "quangnd",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^3.0.6",
