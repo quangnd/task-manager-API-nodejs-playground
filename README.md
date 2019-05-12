@@ -2,7 +2,7 @@
 
 ## Features
 
-- CRUD operations. In associate with MongoDB.
+- CRUD operations. In associate with MongoDB and Mongoose.
 - Authentication and protect API with middleware.
 - File upload.
 - Simple sort, filter and paging.
